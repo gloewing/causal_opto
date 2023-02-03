@@ -9,8 +9,7 @@ library(dplyr)
 setwd("~/Desktop/NIMH Research/Causal/DA_adapts_learn_rate")
 matdat <- R.matlab::readMat("seshMerge.mat")
 matdat <- matdat$seshMerge
-nms <- rownames(matdat[,1,])
-cue_nms <- nms[sess_idx] # names with same dimension about trial type
+
 
 # indices in dataset of variables
 photo_idx <- 7
@@ -43,6 +42,8 @@ id_mat[slMinus,2] <- "slMinus"
 id_mat[sPlusLPlus,2] <- "sPlusLPlus"
 
 # session data
+nms <- rownames(matdat[,1,])
+cue_nms <- nms[sess_idx] # names with same dimension about trial type
 dat <- do.call(cbind, lapply(sess_idx, function(x) do.call(c, matdat[x,,])  ) ) # seq_along(cue_nms)
 colnames(dat) <- cue_nms
 ids <- do.call(c, lapply(seq_along(1:n), function(x) rep(x, length( matdat[1,,][[x]])  ) ))
@@ -117,5 +118,5 @@ rm(iti_vec, ids, ITIs, DA_mat, photo, trial_num)
 #       -mean baseline DA[1:150]
 #       -mean cue DA[151:250] # includes the .5second cue and 0.5 second after the cue
 #       -mean reward DA[301:500]
-# 3) identify which trials/sessions to use for figure 5 (and which sessions): identify what right estimand is
-# 4) confirm with Luke that "cue responses were quantified from 0 to 1 s after cue delivery " means "0 seconds post cue onset to 1 second post cue onset" (i.e., from time points 151:250)
+# 3) ***identify which trials/sessions to use for figure 5 (and which sessions): identify what right estimand is
+# 4) ***confirm with Luke that "cue responses were quantified from 0 to 1 s after cue delivery " means "0 seconds post cue onset to 1 second post cue onset" (i.e., from time points 151:250)
