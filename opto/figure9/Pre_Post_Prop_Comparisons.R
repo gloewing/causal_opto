@@ -1,11 +1,10 @@
 # recreate Pre/Post analysis approach in Spontaneous DA paper
 
-# Gabe Loewinger and Alex Levis 2-15-24
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
-code_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/"
-save_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/preProp_int/"
+wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
+code_wd <- "/Users/folder/Desktop/NIMH Research/Causal/msm_hr/"
+save_wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/preProp_int/"
 # learners
-toml.list <- configr::read.config(file = "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoda_intermediate_results/closed_loop_learners.toml")
+toml.list <- configr::read.config(file = "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoda_intermediate_results/closed_loop_learners.toml")
 learner_ids <- toml.list[[1]]$learners
 
 animals_incl <- c("1528", "1529", "1544", "1546", "15822", "15823", "15847",                
@@ -68,7 +67,7 @@ fig <-
          strip.text = element_text(face="bold", color="black", size = rel(1))) +
   guides(color= guide_legend(title="Target"))   
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
 ggsave( "prePost_Macro.pdf",
         plot = fig,
         width = 6,
@@ -150,7 +149,7 @@ inference_table <- seMat %>%
   dplyr::filter(Coef == 4) # only need interaction
 
 write.csv(inference_table, 
-          "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/pre_post_Prop.csv",
+          "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/pre_post_Prop.csv",
           row.names = FALSE)
 
 # treatment x opsin *Interaction*
@@ -187,7 +186,7 @@ plt_int <-
          strip.text.x = element_blank()) + 
   guides(color= guide_legend(title="Pose")) 
 # 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
 ggsave( "prePost_Prop.pdf",
         plot = plt_int,
         width = 6,
@@ -201,7 +200,7 @@ rm(plt_int)
 # GEE Table on their binned data (.parquet file)
 # -------------------------------
 # original data from authors
-fl_nm <- "/Users/loewingergc/Desktop/Research/learning_timecourse_binsize-30.parquet"
+fl_nm <- "/Users/folder/Desktop/Research/learning_timecourse_binsize-30.parquet"
 dat_bin <- arrow::read_parquet(file = fl_nm) %>% 
   table.express::filter(session_number <= 2, # only pre-stim and stim days
                         rle == TRUE, # this is used to filter repeat rows
@@ -213,7 +212,7 @@ ctrl_ids <- dat_bin %>% table.express::filter(area == "ctrl") %>% table.express:
 ctrl_ids <- ctrl_ids$mouse_id
 
 # learner mice
-toml.list <- configr::read.config(file = "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoda_intermediate_results/closed_loop_learners.toml")
+toml.list <- configr::read.config(file = "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoda_intermediate_results/closed_loop_learners.toml")
 learner_ids <- toml.list[[1]]$learners
 
 setDF(dat_bin)
@@ -325,7 +324,7 @@ plt_int <-
   guides(color= guide_legend(title="Pose")) 
 # 
 # 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post")
 ggsave( "prePost_bin.pdf",
         plot = plt_int,
         width = 6,
