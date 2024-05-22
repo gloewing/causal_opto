@@ -1,4 +1,4 @@
-# Causal Inference in the Closed Loop
+# Causal Inference in the Closed Loop for NeurIPS 2024 Submission
 We include code to reproduce results. It may require downloading R packages and changing working directories.
 
 ## Simulations
