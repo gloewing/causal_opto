@@ -1,8 +1,5 @@
 # dataset preprocess of Spontaneous DA on Curium for Both treatment and control animals
 
-## ***sign on***
-# ssh loewingergc@curium.nimh.nih.gov
-
 ## ***load R***
 # R
 
@@ -19,7 +16,7 @@ library(arrow)
 library(configr)
 library(data.table)
 library(table.express)
-source("/home/loewingergc/optoDA_preprocess_new/data_preprocess.R")
+source("/home/folder/optoDA_preprocess_new/data_preprocess.R")
 dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/closed_loop_behavior_transfer.parquet")
 # dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/learning_timecourse_binsize-30.parquet")
 
@@ -68,8 +65,8 @@ idx_final <- idx # save final file to add below
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_data_thresh.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_data_thresh.csv") # write file
 }else{
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_data.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_data.csv") # write file
 }  
 rm(dat, d, idx, A_idx, avail_idx)
