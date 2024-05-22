@@ -1,20 +1,15 @@
 # DTR MSM simulations
-# Alex Levis and Gabe Loewinger 
 # 11/24/23
 
 library(sandwich)
  
 cluserInd <- TRUE
 if(cluserInd){
-  
-  # this R code is saved in: /home/loewingergc/dtr/code/
-  # bash in: /home/loewingergc/bash
-  # parameters sims6 in: /home/loewingergc/dtr/data
-   
+
   # paths
-  wd <- "/home/loewingergc/dtr/code/" 
-  data_path <-"/home/loewingergc/dtr/data/" # path to original Matlab files for data
-  save.folder <- "/home/loewingergc/dtr/msm_sims_normals" # msm_sims_dt4" #
+  wd <- "insert"
+  data_path <-"insert" # path to original Matlab files for data
+  save.folder <- "insert" # msm_sims_dt4" #
   
   args <- commandArgs(TRUE)
   seed <- as.integer( Sys.getenv('SLURM_ARRAY_TASK_ID') ) # seed index from array id
@@ -22,7 +17,7 @@ if(cluserInd){
   time_points <- as.integer( as.numeric(args[2]) ) # time points per animal
   
 }else{
-  wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/Final Sims/Code/"
+  wd <- "insert"
   n <- 100
   time_points <- 500
   seed <- 7

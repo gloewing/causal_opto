@@ -4,8 +4,8 @@
 # compare different K and betaVar -- no regularization
 ######################################################
 setwd("/Users/loewingergc/Desktop/Research/msm_sims_normals/files_c") # msm_sims_dt2")
-save_folder <- "/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/Final Sims/Figures"
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/Final Sims/Code/" #"/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/"
+save_folder <- "/Causal/msm_hr/Final Sims/Figures"
+wd <- "/Causal/msm_hr/Final Sims/Code/" #"/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/"
 source(paste0(wd,"saveFn.R"))
 library(dplyr)
 library(stringr)
@@ -13,7 +13,7 @@ library(latex2exp)
 library(kableExtra)
 library(tidyverse)
 
-dd <- read.csv("/Users/loewingergc/Desktop/Research/msm_sims_gauss/files_c/dtr_msm_n_4_tm_10_totSims_1000_boots_5000_c_agg2")
+dd <- read.csv("/Desktop/Research/msm_sims_gauss/files_c/dtr_msm_n_4_tm_10_totSims_1000_boots_5000_c_agg2")
 colnm = colnames(dd)
 process <- TRUE
 tVec <- c(10, 50, 500)
