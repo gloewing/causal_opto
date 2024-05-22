@@ -18,7 +18,7 @@ rownames(resMat) <- rep(1:num_outcomes, times = length(kVec)) # label which pose
 
 # read in results for "standard methods"
 method_number <- 1
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/preprocessed_data/"
+wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/preprocessed_data/"
 orig_stats <- read.csv(paste0(wd, "allAnimals_stats.csv")) %>%
                 dplyr::mutate(signif = p_val <= 0.05) %>% # calculate significance
                 dplyr::select(target, signif)
@@ -26,7 +26,7 @@ resMat[,method_number] <- orig_stats$signif # repeats since does not have k
 
 # read in results for "our methods"
 method_number <- 3
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Baseline_Response_Int/"
+wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Baseline_Response_Int/"
 learner <- NA # all animals
 main_effect_dims <- 2:4 # coefficient indices of main effects
 int_effect_dims <- 6:8 # coefficient indices of interactions effects
@@ -206,7 +206,7 @@ plt <-
   guides(color= guide_legend(title="Pose")) +
   labs(tag = "A") 
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/baseline_responding_int/Figures")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/baseline_responding_int/Figures")
 ggsave( "dose_response_baselineInt_maineffects.pdf",
         plot = plt,
         width = 6,
@@ -250,7 +250,7 @@ plt_int <-
   guides(color= guide_legend(title="Pose")) +
   labs(tag = "B")
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/baseline_responding_int/Figures")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/baseline_responding_int/Figures")
 ggsave( "dose_response_baselineInt.pdf",
         plot = plt_int,
         width = 6,
