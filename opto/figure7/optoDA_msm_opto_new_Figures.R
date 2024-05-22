@@ -17,7 +17,7 @@ rownames(resMat) <- rep(1:num_outcomes, times = length(kVec)) # label which pose
 
 # read in results for "standard methods"
 method_number <- 1
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/preprocessed_data/"
+wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/preprocessed_data/"
 orig_stats <- read.csv(paste0(wd, "allAnimals_stats.csv")) %>%
                 dplyr::mutate(signif = p_val <= 0.05) %>% # calculate significance
                 dplyr::select(target, signif)
@@ -25,7 +25,7 @@ resMat[,method_number] <- orig_stats$signif # repeats since does not have k
 
 # read in results for "our methods"
 method_number <- 3
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Dose/" 
+wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Dose/" 
 learner <- NA # all animals
 main_effect_dims <- 2:4 # coefficient indices of main effects
 #int_effect_dims <- (delta + 3):(2*delta+2) # coefficient indices of interactions effects
@@ -159,7 +159,7 @@ plt_full <-
   guides(color= guide_legend(title="Pose"))  
 
 # ALL k values: dose response curve, Delta = 5 for HR-MSM 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Figures")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Figures")
 ggsave( "dose_response_full.pdf",
         plot = plt_full,
         width = 8,
@@ -242,7 +242,7 @@ plt_comb <- ggpubr::ggarrange(plt, plt_cond,
                               legend="bottom") 
 
 # k = 1 dose response curve, Delta = 5 for HR-MSM
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Figures")
+setwd("/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Figures")
 ggsave( "dose_response_k1.pdf",
         plot = plt_comb,
         width = 8,
