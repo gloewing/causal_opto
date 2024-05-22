@@ -100,9 +100,9 @@ idx2 <- idx %>%
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_pre_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_pre_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_pre.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_pre.csv", row.names = FALSE)
 }  
 # 
 # #########################################
