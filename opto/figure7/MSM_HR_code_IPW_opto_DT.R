@@ -16,7 +16,7 @@ msm_HR_optoIPW_DT <- function(data,
 ){
   
   # MAKE SURE TO SORT PROPERLY
-  # saved in /home/loewingergc/msm_hr
+  # saved in /home/folder/msm_hr
   #######################################################################
   ids <- sort(unique(data[,id_name]))
   Wt <- data[,W_name]
