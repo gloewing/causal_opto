@@ -13,8 +13,8 @@ num_outcomes <- 6 # number of "poses"/outcomes
 
 # read in results for "our methods"
 method_number <- 3
-wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3/"
-wd_ctrl <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3_ctrl/" # control group as baseline version of same model
+wd <- "/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3/"
+wd_ctrl <- "/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3_ctrl/" # control group as baseline version of same model
 learner <- NA # all animals
 main_effect_dims <- 2:4 # coefficient indices of main effects
 main_effect_group <- 5 # coefficient indices of main effect of group (null)
@@ -223,7 +223,7 @@ plt <-
   guides(color= guide_legend(title="Pose")) +
   labs(x = "Trials Prior", tag = "A")   
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 ggsave( "dissipate_trt_Int_maineffects.pdf",
         plot = plt,
         width = 6,
@@ -268,7 +268,7 @@ plt_int <-
   guides(color= guide_legend(title="Pose")) +
   labs(x = "Trials Prior", tag = "A")
 # 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 ggsave( "dissipate_trt_Int.pdf",
         plot = plt_int,
         width = 6,
@@ -312,7 +312,7 @@ plt_grp <-
   guides(color= guide_legend(title="Pose")) +
   labs(tag = "C")
 # 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 ggsave( "dissipate_trt_group.pdf",
         plot = plt_grp,
         width = 6,
@@ -355,7 +355,7 @@ plt_ctrl <-
   guides(color= guide_legend(title="Pose")) +
   labs(x = "Trials Prior", tag = "B")   
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 # ggsave( "dissipate_trt_Int_maineffects.pdf",
 #         plot = plt,
 #         width = 6,
@@ -371,7 +371,7 @@ plt_comb <- ggpubr::ggarrange(plt, plt_int,
                               #widths = c(2,1),
                               legend="bottom") 
 
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 ggsave( "dissipate_trt_Int_combined.pdf",
         plot = plt_comb,
         width = 10,
@@ -382,9 +382,9 @@ ggsave( "dissipate_trt_Int_combined.pdf",
 # standard analysis (not binned) -- GEE
 # -----------------------------------------------------------
 # see code for production of this table:
-# /Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/Pre_Post_Comparisons.R
+# /Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/Pre_Post_Comparisons.R
 
-inference_table <- read.csv("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/pre_post.csv")
+inference_table <- read.csv("/Causal/spontaneous_behavior_opto/Figures/Final Figures/Pre-post/pre_post.csv")
 
 # treatment x opsin *Interaction*
 plt_gee <-
@@ -469,7 +469,7 @@ plt_comb <- ggpubr::ggarrange(plt, plt_cond,
                               legend="bottom") 
 # 
 # # save figures
-# setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+# setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 # ggsave( "dissipate_combined.pdf",
 #         plot = plt_comb,
 #         width = 10,
@@ -486,7 +486,7 @@ plt_comb <- ggpubr::ggarrange(plt_int,
                               legend="bottom") 
 
 # save figures
-setwd("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
+setwd("/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/Figures")
 ggsave( "dissipate_combined_horizontal_small.pdf",
         plot = plt_comb,
         width = 20,
