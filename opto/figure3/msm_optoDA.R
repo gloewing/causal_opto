@@ -1,22 +1,21 @@
 # Effect Dissipation: Interaction with trt/control
 # HR-MSM for optoDA
-# Gabe Loewinger and Alex Levis 1-25-24
 # interaction with treatment/control
 
 curium <- FALSE
 if(curium){
-  wd <- "/home/loewingergc/optoDA_preprocess/"
-  code_wd <- "/home/loewingergc/msm_hr/"
-  save_wd <- "/home/loewingergc/optoDA_results/"
+  wd <- "/home/folder/optoDA_preprocess/"
+  code_wd <- "/home/folder/msm_hr/"
+  save_wd <- "/home/folder/optoDA_results/"
 
   # learners
   toml.list <- configr::read.config(file = "/lscratch/SpontaneousBehaviour/optoda_intermediate_results/closed_loop_learners.toml")
   learner_ids <- toml.list[[1]]$learners
   
 }else{
-  wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
-  code_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/code/"
-  save_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3/"
+  wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
+  code_wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_treatment_dissipate_3/code/"
+  save_wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/dose_treatment_dissipate_3/"
   # learners
   learner_ids <- read.csv(paste0(wd, "learners.csv"))$mouse_id 
   }
