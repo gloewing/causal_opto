@@ -1,9 +1,6 @@
 # dataset preprocess of Spontaneous DA on Curium
 # pre-process data for replicating original analysis
 
-## ***sign on***
-# ssh loewingergc@curium.nimh.nih.gov
-
 ## ***load R***
 # R
 
@@ -20,7 +17,7 @@ library(arrow)
 library(configr)
 library(data.table)
 library(table.express)
-source("/home/loewingergc/optoDA_preprocess_new/data_preprocess.R")
+source("/home/folder/optoDA_preprocess_new/data_preprocess.R")
 dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/closed_loop_behavior_transfer.parquet")
 
 
@@ -108,7 +105,7 @@ idx2$optoCount <- rowMeans(idx2[,c("Sess_1", "Sess_2")]) # pre stim days
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_active_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_active_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_active.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_active.csv", row.names = FALSE)
 }  
