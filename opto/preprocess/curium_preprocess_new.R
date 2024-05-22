@@ -1,8 +1,5 @@
 # dataset preprocess of Spontaneous DA on Curium
 
-## ***sign on***
-# ssh loewingergc@curium.nimh.nih.gov
-
 ## ***load R***
 # R
 
@@ -19,7 +16,7 @@ library(arrow)
 library(configr)
 library(data.table)
 library(table.express)
-source("/home/loewingergc/optoDA_preprocess_new/data_preprocess.R")
+source("/home/folder/optoDA_preprocess_new/data_preprocess.R")
 dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/closed_loop_behavior_transfer.parquet")
 # dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/learning_timecourse_binsize-30.parquet")
 
@@ -68,9 +65,9 @@ idx_final <- idx # save final file to add below
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_thresh.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_thresh.csv") # write file
 }else{
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA.csv") # write file
 }  
 rm(dat, d, idx, A_idx, avail_idx)
 
@@ -119,9 +116,9 @@ idx_final <- idx # save final file to add below
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_thresh.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_thresh.csv") # write file
 }else{
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA.csv") # write file
 }  
 
 rm(dat, d, idx, A_idx, avail_idx)
@@ -187,12 +184,12 @@ setDF(idx2)
 
 idx2$optoCount <- rowMeans(idx2[,c("Sess_1", "Sess_2")]) # pre stim days
 
-#data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_opto_counts.csv") # write file
+#data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_opto_counts.csv") # write file
 # write data
 if(post_threshold){
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_opto_counts_thresh.csv") # write file
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_opto_counts_thresh.csv") # write file
 }else{
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_opto_counts.csv") # write file
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_opto_counts.csv") # write file
 }  
 
 rm(dat, d, idx, idx2, A_idx, avail_idx)
@@ -257,9 +254,9 @@ idx_mrg$postCount <- rowMeans(idx_mrg[,c("Sess_3", "Sess_4")]) # post stim days
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_prePost_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_prePost_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_prePost.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_prePost.csv", row.names = FALSE)
 }  
 
 
@@ -320,11 +317,11 @@ idx2$postCount <- rowMeans(idx2[,c("Sess_3", "Sess_4")]) # post stim days
 
 
 # write data
-# data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_prePost_ctrl.csv", row.names = FALSE)
+# data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_prePost_ctrl.csv", row.names = FALSE)
 if(post_threshold){
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_prePost_ctrl_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_prePost_ctrl_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_prePost_ctrl.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_prePost_ctrl.csv", row.names = FALSE)
 }  
 
 
@@ -372,10 +369,10 @@ idx <- data_preprocess(dat, post_threshold = post_threshold) # pre-process data 
 idx_final <- idx # save final file to add below
 # **************************************************
 if(post_threshold){
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_control_thresh.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_control_thresh.csv") # write file
   
 }else{
-  data.table::fwrite(idx, "/home/loewingergc/optoDA_preprocess_new/optoDA_control.csv") # write file
+  data.table::fwrite(idx, "/home/folder/optoDA_preprocess_new/optoDA_control.csv") # write file
 }  
 
 rm(dat, d, idx, A_idx, avail_idx)
@@ -437,9 +434,9 @@ idx_mrg = idx2 %>%
  
 # write data
 if(post_threshold){
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_summary_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_summary_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_summary.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_summary.csv", row.names = FALSE)
 }  
 
 
@@ -491,9 +488,9 @@ idx_mrg = idx2 %>%
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_summary_thresh_ctrl.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_summary_thresh_ctrl.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx_mrg, "/home/loewingergc/optoDA_preprocess_new/optoDA_summary_ctrl.csv", row.names = FALSE)
+  data.table::fwrite(idx_mrg, "/home/folder/optoDA_preprocess_new/optoDA_summary_ctrl.csv", row.names = FALSE)
 }  
 
 
