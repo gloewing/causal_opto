@@ -1,21 +1,20 @@
 # Dose-Response Only (pooled across stim sessions)
 # HR-MSM for optoDA
-# Gabe Loewinger and Alex Levis 1-25-24
 
 curium <- FALSE
 if(curium){
-  wd <- "/home/loewingergc/optoDA_preprocess/"
-  code_wd <- "/home/loewingergc/msm_hr/"
-  save_wd <- "/home/loewingergc/optoDA_results/"
+  wd <- "/home/folder/optoDA_preprocess/"
+  code_wd <- "/home/folder/msm_hr/"
+  save_wd <- "/home/folder/optoDA_results/"
 
   # learners
   toml.list <- configr::read.config(file = "/lscratch/SpontaneousBehaviour/optoda_intermediate_results/closed_loop_learners.toml")
   learner_ids <- toml.list[[1]]$learners
   
 }else{
-  wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
-  code_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Code/"
-  save_wd <- "/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Dose/"
+  wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Data_processed/"
+  code_wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/Figures/Final Figures/dose_MSM/Code/"
+  save_wd <- "/Users/folder/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/optoDA_results/Final/Dose/"
   # learners
   learner_ids <- read.csv(paste0(wd, "learners.csv"))$mouse_id 
   }
