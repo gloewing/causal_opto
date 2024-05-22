@@ -1,9 +1,6 @@
 # dataset preprocess of Spontaneous DA on Curium
 # with proportions 4/12/24
 
-## ***sign on***
-# ssh loewingergc@curium.nimh.nih.gov
-
 ## ***load R***
 # R
 
@@ -20,7 +17,7 @@ library(arrow)
 library(configr)
 library(data.table)
 library(table.express)
-source("/home/loewingergc/optoDA_preprocess_new/data_preprocess.R")
+source("/home/folder/optoDA_preprocess_new/data_preprocess.R")
 dat <- arrow::read_parquet(file = "/lscratch/SpontaneousBehaviour/optoda_raw_data/closed_loop_behavior_transfer.parquet")
 
 
@@ -104,9 +101,9 @@ idx2 <- idx %>%
 
 # write data
 if(post_threshold){
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_optoProp_thresh.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_optoProp_thresh.csv", row.names = FALSE)
 }else{
-  data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_optoProp.csv", row.names = FALSE)
+  data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_optoProp.csv", row.names = FALSE)
 }  
 # 
 # #########################################
@@ -128,7 +125,7 @@ if(post_threshold){
 # 
 # # write data
 # if(post_threshold){
-#   data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_pre_thresh_Props.csv", row.names = FALSE)
+#   data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_pre_thresh_Props.csv", row.names = FALSE)
 # }else{
-#   data.table::fwrite(idx2, "/home/loewingergc/optoDA_preprocess_new/optoDA_pre_Props.csv", row.names = FALSE)
+#   data.table::fwrite(idx2, "/home/folder/optoDA_preprocess_new/optoDA_pre_Props.csv", row.names = FALSE)
 # }  
