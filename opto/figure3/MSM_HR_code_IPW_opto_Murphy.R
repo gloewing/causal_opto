@@ -13,7 +13,6 @@ msm_HR_optoIPW_Murphy <- function(data,
                    session_name = NA,
                    h = NA # numerator weights - to update later
 ){
-  # saved in /home/loewingergc/msm_hr
   #######################################################################
   
   ids <- sort(unique(data[,id_name]))
