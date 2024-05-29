@@ -3,9 +3,9 @@
 ######################################################
 # compare different K and betaVar -- no regularization
 ######################################################
-setwd("/Users/loewingergc/Desktop/Research/msm_sims_normals/files_c") # msm_sims_dt2")
+setwd("/Users/Desktop/Research/msm_sims_normals/files_c") # msm_sims_dt2")
 save_folder <- "/Causal/msm_hr/Final Sims/Figures"
-wd <- "/Causal/msm_hr/Final Sims/Code/" #"/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/"
+wd <- "/Causal/msm_hr/Final Sims/Code/" 
 source(paste0(wd,"saveFn.R"))
 library(dplyr)
 library(stringr)
@@ -464,44 +464,3 @@ ggsave( "dtr_msm_DR_bias_avg_excursion.pdf",
         plot = plt_bias,
         width = 12,
         height = 6)
-########################################################
-
-# 
-# 
-# plt_power = 
-#   dat %>% tibble %>%  
-#   dplyr::mutate(var_idx = gsub( prefix, "", gsub("\\_coef.*","", key)), #substring(gsub(prefix, "", key) ,1,1), # extract variance
-#                 coef_idx = gsub( ".*coef_", "", key)) %>% #str_sub(gsub(prefix, "", key) ,-1,-1) ) %>%
-#   dplyr::filter(value >= 0,
-#                 value <= 1) %>%
-#   dplyr::select(-key) %>%
-#   dplyr::group_by(t, n, coef_idx, var_idx) %>% 
-#   dplyr::summarize(my_mean = mean(as.numeric(value), na.rm = TRUE) ) %>% 
-#   #arrange(t, n) %>% #print(n = Inf)
-#   # dplyr::filter(n %in% c(50, 100, 250, 1000),
-#   #               r %in% c(100, 500, 1000),
-#   #               key %in% grp_incl) %>%
-#   ggplot(aes( y = my_mean, x = var_idx)) +
-#   #facet_wrap(t ~ n, nrow = 2) +
-#   facet_grid(t ~ n) +
-#   # geom_boxplot(lwd = 1, fatten = 0.5) + 
-#   geom_point(aes(color = factor(coef_idx))) + 
-#   geom_hline(yintercept=0.95, 
-#              linetype="dashed", 
-#              color = "black", 
-#              size = rel(0.5),
-#              alpha = 0.7) + #
-#   ylab("Power" )+ 
-#   xlab("Robust Variance Estimator") + 
-#   scale_fill_manual(values = myColors) +
-#   scale_color_manual(values = myColors ) +
-#   theme_classic(base_size = 12) +
-#   #coord_cartesian(ylim = c(0.5, 1.25) ) + 
-#   theme( plot.title = element_text(hjust = 0.5, color="black", size=rel(1), face="bold"),
-#          axis.text=element_text(face="bold",color="black", size=rel(1)),
-#          axis.title = element_text(face="bold", color="black", size=rel(1)),
-#          legend.key.size = unit(2, "line"), # added in to increase size
-#          legend.text = element_text(face="bold", color="black", size = rel(1)), 
-#          legend.title = element_text(face="bold", color="black", size = rel(1)),
-#          strip.text = element_text(face="bold", color="black", size = rel(1))) +
-#   guides(color= guide_legend(title="Coef Index"))  
