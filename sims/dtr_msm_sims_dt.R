@@ -235,25 +235,3 @@ saveFn_Indiv(file = resMat2,
              iterNum = seed, 
              iters = numSims,
              save.folder = save.folder)
-
-# count to see if ready
-print(paste("count:", seed))
-#file_cnt_total <- file_cntr(fileNm = fileNm, save.folder = save.folder)
-
-# see if all completed
-# if(file_cnt_total == numSims){
-#   process_files(fileNm = fileNm, save.folder = save.folder, colnm = NULL, itrs = numSims)
-# }
-
-print(paste("Save 3:", seed))
-# also save aggregate
-# saveFn(file = resMat1,
-#        fileNm = paste0(fileNm, "_agg"),
-#        iterNum = seed,
-#        save.folder = save.folder)
-# 
-# print(paste("Save 4:", seed))
-# saveFn(file = resMat2,
-#        fileNm = paste0(fileNm, "_c_agg2"),
-#        iterNum = seed,
-#        save.folder = save.folder)
