@@ -84,7 +84,6 @@ msm_HR <- function(data,
   setDT(data)
   data[,keyby = .(id, session), regime_number := rep(1:q, .N / q)] # create regime number column
   mycol <- paste0("r", 1:delta)
-  # data[, c(mycol) := 0] # initialize intermediary products
   
   data[, keyby = .(id, session, regime_number), c(mycol) := (shift(I1, n = (delta-1):0, type = "lag", fill = 0))] #[,regime_prod1 := Reduce(`*`, .SD), .SDcols = idx_regI1] #[,regime_prod1]
   
@@ -105,7 +104,6 @@ msm_HR <- function(data,
   
   # delete columns
   data[, c(mycol) := NULL]
-  #data[, regime_ind := 1*(regime_p0 + regime_p1 == delta)] # calculate regime compliance variable
   
   # define variables inside dataset
   message(paste0("delta", delta))
@@ -120,10 +118,6 @@ msm_HR <- function(data,
   # MSM
   ####################
   message("Fitting MSM")
-  # make more general in mean specification with products of d's using string in `formula` R syntax
-  # mycol <- paste0("d_", 1:delta)
-  # data[, d_sum := Reduce(`+`, .SD), .SDcol = mycol]
-  # data$d_sum <- factor(data$d_sum)
   
   # MSM is a glm
   if(family == "gaussian"){
