@@ -3,8 +3,8 @@ library(geepack)
 library(rootSolve)
 library(optimx)
 
-dat <- data.table::fread("/Users/loewingergc/Desktop/NIMH Research/Causal/spontaneous_behavior_opto/example_data.csv")
-source("/Users/loewingergc/Desktop/NIMH Research/Causal/msm_hr/Final Sims/Code/sandwich_normal.R")
+dat <- data.table::fread("/Users/Research/Causal/spontaneous_behavior_opto/example_data.csv")
+source("/Users/Research/Causal/msm_hr/Final Sims/Code/sandwich_normal.R")
 n <- length(unique(dat$id))
 
 set.seed(634)
