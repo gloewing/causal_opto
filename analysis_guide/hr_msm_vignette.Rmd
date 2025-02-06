@@ -1,0 +1,376 @@
+---
+title: "Sequential Excursion Effect Guide"
+# author: "Gabriel Loewinger, Alex Levis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  toc: yes
+  pdf_document: null
+vignette: "%\\VignetteIndexEntry{fastFMM Vignette} %\\VignetteEncoding{UTF-8} %\\VignetteEngine{knitr::rmarkdown}
+  \n"
+---
+  
+```{r setup, echo = FALSE, eval = FALSE}
+knitr::opts_chunk$set(comment = "#>", warning=FALSE, message=FALSE)
+output: pdf_document
+# output: rmarkdown::html_vignette
+```
+
+```{r, message=FALSE, echo=FALSE, results='hide', include = FALSE, warning=FALSE}
+# Thanks to Yihui Xie for providing this code
+# #  %\VignetteEngine{knitr::rmarkdown} 
+# %\VignetteEngine{rmarkdown::render}
+library(knitr)
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+  lines <- options$output.lines
+  if (is.null(lines)) {
+    return(hook_output(x, options))  # pass to default hook
+  }
+  x <- unlist(strsplit(x, "\n"))
+  more <- "..."
+  if (length(lines)==1) {        # first n lines
+    if (length(x) > lines) {
+      # truncate the output, but add ....
+      x <- c(head(x, lines), more)
+    }
+  } else {
+    x <- c(more, x[lines], more)
+  }
+  # paste these lines together
+  x <- paste(c(x, ""), collapse = "\n")
+  hook_output(x, options)
+})
+```
+
+# Sequential Excursion Effects: An applied example
+
+
+## Data Formating
+
+Let's load the data, look at the format, and work through a simple implementation.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat = read.csv("example_data.csv") 
+head(dat)
+```
+
+Each row is a timepoint/"trial". The columns are as follows: 
+
+- `id` is the subject ID 
+- `trial` is the timepoint
+- `X` is a binary indicator of availability. If your data was collected with a static regime (i.e., treatment was randomized marginally at each timepoint/"trial" with a so-called "open-loop" design), then set `X=1` for every row.
+- `Y` is the outcome. We simulated this data such that `Y` is continuous, but our framework handles all outcome data types (e.g., binary, count).
+- `weights` are the treatment probabilities, but we show below how this column's values were calculated below for completeness.
+- `Group` is the (baseline-randomized) treatment arm variable. Micro-randomized trials in mobile health sometimes have just one treatment arm, so this is $not$ necessary to have. However, when you analyze optogenetics data, for example, this is often critical to incorporate into your analysis.
+
+### Treatment Probabilities and Weights
+Our `weights` column contains the treatment probabilites, $\mathbb{P}(A_t = a_t \mid X_t)$ (these actually are the *inverse* of the weights used in the method): the probability that an individual receives the treatment that they did on timepoint/trial $t$, given their availability status, $X_t$. Let's say we ran an experiment where an animal received optogenetic stimulation on 80% of the timepoints/trials when they press a lever ($X_t=1$), but if they do not press a lever ($X_t=0$), they never receive stimulation. On timepoints where $X_t = 1$, the weights are $W_t = 0.8$ if $A_t=1$ (i.e., they received stimulation), and $W_t = 0.2$ if $A_t=0$ (i.e., they did not get stimulated). If $X_t=0$ (they were not available to get stimulated), then $W_t = 1$ no matter what. The `weights` were included in the loaded dataset, but for explanatory purposes, we include the code below which calculates these weights for you (with an example 80% treatment probability).
+
+```{r, message=FALSE, echo=TRUE, results='hide', include = TRUE, warning=FALSE}
+treat_prob = 0.8 # P(A = 1 | X = 1) # experimental treatment probability
+dat$weights = 1 # initialize for all available = 0 trials
+dat$weights = ifelse(dat$X == 1 & dat$A == 1, treat_prob, dat$weights) #
+dat$weights = ifelse(dat$X == 1 & dat$A == 0, 1 - treat_prob, dat$weights)
+```
+
+# Excursion Effects Estimation and Testing
+### Blip Effect
+Let's start with the classic blip effect: "what's the change in the mean counterfactual outcome for treatment on the most recent timepoint -- what would have happened on average if everyone on timepoint $t$ received treatment (if available) vs. if no one had received treatment?" The left plot shows a setting where a blip effect exists in blue, and a setting where there is no blip effect in red.
+
+```{r figurename, echo=FALSE, out.width = '95%'}
+knitr::include_graphics("vignette_blip.pdf")
+```
+
+To test this, we first construct the treatment sequence (for Policy 0 and Policy 1) matrix depicted in the figure above. This sequence matrix will have $\Gamma = 1$ columns and $q = 2$ rows, where $q$ is the number of unique treatment sequences (policies) we want to estimate the causal effect of. For the blip effect, $\Gamma=1$ because we are only looking at the effect of the last timepoint, and $q=2$ because we want to know what happens for treatment (Policy 1 in the figure) or no-treatment (Policy 0 in the figure) on the most recent timepoint only. 
+
+```{r, message=FALSE, echo=TRUE, results='hide', include = TRUE, warning=FALSE}
+seq.mat = matrix(c(1,0), nrow = 2)
+```
+
+This can be read in chronological order from left to right: `d_1` is a treatment opportunity indicator for timepoint $t-1$ and `d_2` is a treatment opportunity indicator for timepoint $t$.
+
+Now let's use our code to construct the necessary dataset and Inverse Probability of Treatment (IPW) weights. We specify the names of the variables. If we have collected data across multiple days/sessions, we should specify that so the function is not confused by, for example, having multiple timepoint 1s from different sessions. In our case, we only have one session so we leave this as `NA`.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+source("seqEx.R")
+dat.seqex = seqEx(data = dat,
+                  A_name = "A",
+                  Y_name = "Y",
+                  X_name = "X",
+                  W_name = "weights",
+                  id_name = "id",
+                  trial_name = "trial",
+                  session_name = NA,
+                  seq.mat = seq.mat)
+head(dat.seqex)
+```
+If we looked further, we'd see some timepoints were removed, and some repeated. At this point, each observation (row) is not super interpretable. But we can see we now have a variable `d_1`, our treatment variable that we can use as a covariate in a regression. `w` is the IP weights.
+
+How do we answer our question? Well looking back at Figure 1, we want to test whether the mean (counterfactual) outcome is different between a policy in which you were treated on the last timepoint vs. were not treated on the last timepoint: $\mathbb{E}[Y(\boldsymbol{a}^{(1)})] - \mathbb{E}[Y(\boldsymbol{a}^{(0)})]$. This reduces to testing whether the coefficient for `d_1` is significantly different than 0. 
+
+To test this, let's fit a weighted GEE. Since outcomes are continuous, the projection parameter(s) (the History-Restricted Marginal Structural Model  regression coefficients) can be estimated with a weighted linear regression with a robust covariance estimator. If one has data with a binary outcome, they can apply our projection parameter code in the GitHub repository. Alternatively, if you have count or binary data, you can fit a GLM and use the same robust covariance estimators below to yield GEE estimates. In our paper, we tested the `HC` Heteroscedasticity-Consistent Covariance Matrix Estimators, so we use those for inference here. Since our sample size is fairly large, $n=100$, we use the `type="HC0"`, but recommend `type="HC3"` for less than $n=50$. Finally, let's test this in the 'treatment' group (arm) first to keep things simple. We will deal with between-arm effects below.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex.trt <- dat.seqex[dat.seqex$Group == "Treatment",] # select rows for treatment group only
+mod = lm(Y ~ d_1, data = dat.seqex, weights = w) # fit model
+cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
+lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
+```
+
+The `d_1` variable shows that a statistically significant reduction in mean outcome levels when receiving treatment in the previous timepoint compared to no treatment (averaging over all timepoints prior to the most recent one). That is, there is a significant "Blip Effect."
+
+### Sequential Excursion Effects: Dose-Response
+Now let's move on to testing the effect of treatment $sequences$. We can use these to see if having received, say, two treatments in the last two timepoints, causes a greater effect on the mean outcome than one treatment in the past two timepoints. The process is the same as before, but now we define our sequence matrix to capture all combinations of treatment in the past $\Gamma=2$ timepoints. 
+
+```{r dosefigure, echo=FALSE, out.width = '95%'}
+knitr::include_graphics("vignette_dose.pdf")
+```
+The left plot shows a setting where a dose response effect exists in red, and a setting where the effect is constant from successive treatments (in blue).
+```{r, message=FALSE, echo=TRUE, results='hide', include = TRUE, warning=FALSE}
+delta = 2
+seq.mat = expand.grid( rep(list(0:1), delta))
+colnames(seq.mat) = paste0('d_', 1:delta)
+print(seq.mat)
+```
+```{r, message=FALSE, echo=FALSE, include = TRUE, warning=FALSE}
+delta = 2
+seq.mat = expand.grid( rep(list(0:1), delta))
+colnames(seq.mat) = paste0('d_', 1:delta)
+print(seq.mat)
+```
+Let's construct our dataset in the same way above, but using our new `seq.mat` for the dose response model.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+source("seqEx.R")
+dat.seqex = seqEx(data = dat,
+                  A_name = "A",
+                  Y_name = "Y",
+                  X_name = "X",
+                  W_name = "weights",
+                  id_name = "id",
+                  trial_name = "trial",
+                  session_name = NA,
+                  seq.mat = seq.mat)
+head(dat.seqex)
+```
+
+In this case we have 4 policies (i.e., treatment rules or "regimes") that are of potential interest: one policy of dose 0, two policies of dose 1, one policy of dose 2. In the figure above, we summarize the policies simply by their dose and find an effect that averages across, for example, all policies of dose 1. To do this, we need to construct a variable in our dataset that labels these appropriately.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex = as.data.frame(dat.seqex)
+var_nams = paste0("d_", 1:delta) # variable names
+dat.seqex$dose = rowSums(dat.seqex[,var_nams]) # add up the total number of treated trials
+print(dat.seqex[c(1,30,70,110), c(var_nams, "dose")]) # print a few representative cases
+```
+We can see our `dose` variable is just the total number of times in the last $\Gamma=2$ timepoints with treatment. Let's set `dose` as a factor variable so that we can test whether there are differences. We adjust the model now to include `dose` as the covariate/treatment variable. In particular, the model is as follows:
+\[
+    \mathbb{E} [Y_t(\boldsymbol{d}_{\Gamma, t})]  = \beta_0 + \beta_1 I(\sigma_{t -1}(d_{t - 1}) + \sigma_{t}(d_{t}) = 1) + \beta_2 I(\sigma_{t -1}(d_{t - 1}) + \sigma_{t}(d_{t}) = 2),\]
+    where $\sigma_{j}(d_j) \in \{0,1\}$ is an indicator of a treatment opportunity at time $j$ under rule $d_j$.
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex$dose = as.factor(dat.seqex$dose) # set as factor
+dat.seqex.trt <- dat.seqex[dat.seqex$Group == "Treatment",] # select rows for treatment group only
+
+# fit model
+mod = lm(Y ~ dose, data = dat.seqex.trt, weights = w) # fit model
+
+# hypothesis testing
+cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
+lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
+```
+This tests the contrasts outlined on the far right of the plot: the difference in the mean (counterfactual) outcome comparing:
+1. Dose 0 vs. Dose 1
+2. Dose 0 vs. Dose 2
+3. Dose 0 vs. Dose 3
+
+From the output, it is clear there is a significant (decreasing) dose response effect. We could also test other pairs (e.g., Dose 1 vs. Dose 2) than those tested here.
+
+Similarly, we could model `dose` with a linear trend. Let's fit that to emphasize that once we construct the dataset for the inputted policies of interest, we can summarize the treatment and model it in a variety of ways (albeit with different modeling tradeoffs). The only tweak here is that we set `dose` to be a continuous variable so we can model it with a single coefficient.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex$dose = as.numeric(dat.seqex$dose) # set as continuous variable
+dat.seqex.trt <- dat.seqex[dat.seqex$Group == "Treatment",] # select rows for treatment group only
+
+# fit model
+mod = lm(Y ~ dose, data = dat.seqex.trt, weights = w) # fit model
+
+# hypothesis testing
+cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
+lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
+```
+This linear effect estimate is significant.
+
+Let's test one more effect and then move on to effect modification.
+
+## Sequential Excursion Effects: Effect Dissipation
+
+Let's next test whether the effect of a $single$ dose persists or dissipates across timepoints.
+```{r dissipfigure, echo=FALSE, out.width = '95%'}
+knitr::include_graphics("vignette_dissipate.pdf")
+```
+
+Here we set $\Gamma=2$ again, and we test these with respect to a sequence with no treatments in the last $\Gamma=2$ timepoints.
+
+```{r, message=FALSE, echo=TRUE, results='hide', include = TRUE, warning=FALSE}
+# construct treatment sequence matrix
+delta = 2
+seq.mat = rbind( rep(0, delta),
+                 diag(delta) )
+var_nams = paste0("d_", 1:delta) # variable names
+colnames(seq.mat) = var_nams
+print(seq.mat)
+
+# construct dataset
+dat.seqex = seqEx(data = dat,
+                  A_name = "A",
+                  Y_name = "Y",
+                  X_name = "X",
+                  W_name = "weights",
+                  id_name = "id",
+                  trial_name = "trial",
+                  session_name = NA,
+                  seq.mat = seq.mat)
+dat.seqex = as.data.frame(dat.seqex)
+
+# summarize treatment sequence by when most recent dose occurred
+sum.fn <- function(x){
+  ifelse(sum(x) > 0,
+         which(x == 1),
+         0)
+}
+
+dat.seqex$trt.seq = apply(dat.seqex[,var_nams], 1, sum.fn)
+head(dat.seqex[c(1,20,50), c(var_nams, "trt.seq")])
+```
+We can see that trt.seq encodes on what trial (among the last $\Gamma =2$ timepoints) the single treatment occurred. We set `trt.seq=0` if there are no treatments (our baseline value) since we will set `trt.seq` to a factor below. As above, now we can just use `trt.seq` as our treatment variable in a regression to test the effects. In this case, the HR-MSM is as follows:
+\[
+    \mathbb{E} [Y_t(\boldsymbol{d}_{\Gamma, t})]  = \beta_0 + \beta_1 I(\sigma_{t -1}(d_{t - 1}) = 1) + \beta_2 I(\sigma_{t}(d_{t}) = 2),\]
+    where we restrict to $d_{\Gamma, t}$ such that $\sigma_{t -1}(d_{t - 1})  + \sigma_{t}(d_{t}) \leq 1$.
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex$trt.seq = as.factor(dat.seqex$trt.seq) # set as factor variable
+dat.seqex.trt <- dat.seqex[dat.seqex$Group == "Treatment",] # select rows for treatment group only
+
+# fit model
+mod = lm(Y ~ trt.seq, data = dat.seqex.trt, weights = w) # fit model
+
+# hypothesis testing
+cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
+lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
+```
+
+It appears that this treatment has an effect dissipation profile: the more recent the treatment, the larger the effect estimate (trt.seq2 indicates treatment on the most recent trial whereas trt.seq1 indicates treatment two timepoints ago). Again, we could instead compare different pairs (e.g., perhaps we want to compare treatment 2 timepoints ago with treatment 1 trial ago).
+
+Now let's move on to effect modification to show how to incorporate treatment groups (arms) or other effect modifiers.
+
+
+# Effect Modification
+For optogenetics studies, we often want to know whether the effect of an optogenetic stimulation (or sequence of stimulations) is significantly different between treatment (opsin) and (no-opsin) control groups (arms). This reduces to testing interaction terms between treatment arm ($\texttt{Group}$) and the treatment sequence variables constructed above. Let's see one example on the dose response analysis from above. Here we also show we can test the dose response effect with $\Gamma=2$. Formally, the model will be
+\[\mbox{logit}\left ( \mathbb{E} [Y_t(\boldsymbol{d}_{\Gamma, t}) \mid  G = g] \right ) = \beta_0 + \sum_{r=0}^1 \beta_{r+1}  \sigma_{t - r}(d_{t - r}) + \beta_3 g + \sum_{r=0}^1 \beta_{4+r} g \times \sigma_{t - r}(d_{t - r}).\]
+Since we already saw how to construct the dataset, let's jump right into the analysis.
+
+
+```{r, message=FALSE, echo=FALSE, include = TRUE, warning=FALSE}
+delta = 2
+seq.mat = expand.grid( rep(list(0:1), delta))
+colnames(seq.mat) = paste0('d_', 1:delta)
+source("seqEx.R")
+dat.seqex = seqEx(data = dat,
+                  A_name = "A",
+                  Y_name = "Y",
+                  X_name = "X",
+                  W_name = "weights",
+                  id_name = "id",
+                  trial_name = "trial",
+                  session_name = NA,
+                  seq.mat = seq.mat)
+data.table::setDF(dat.seqex)
+var_nams = paste0("d_", 1:delta) # variable names
+dat.seqex$dose = rowSums(dat.seqex[,var_nams]) # add up the total number of treated trials
+```
+
+```{r, message=FALSE, echo=TRUE, include = TRUE, warning=FALSE}
+dat.seqex$dose = as.factor(dat.seqex$dose) # set as factor variable
+dat.seqex$Group = as.factor(dat.seqex$Group)
+dat.seqex$Group = relevel(dat.seqex$Group, ref = "Control") # set Control as baseline
+
+# fit model
+mod = lm(Y ~ dose*Group, data = dat.seqex, weights = w) # fit model
+
+# hypothesis testing
+cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
+lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
+```
+The interaction terms (e.g., `dose1:GroupTreatment`) show that the dose response effect is significantly larger in the Treatment arm compared to the Control arm As we set the Control arm as a the reference level, the finding that the main effects `dose1` and `dose2` indicates that the
+
+More generally, one could include any variable as an effect modifier that was measured before trial $t-\Gamma+1$, such as behavior on trial $t-\Gamma$, trial number, or baseline covariates (e.g., age, sex).
+
+# Treatment-Confounder Feedback
+Why go through the above estimation procedure? Why not just compare simple summaries across groups (arms)? It turns out that in closed-loop designs (i.e., dynamic regimes), "treatment-confounder feedback" can completely obscure the strong effects we observed above. Let's see this by plotting estiamtes of the average outcome at each trial (Plot A) or pooled across trials/timepoints (Plot B).
+
+```{r, warning=FALSE, message=FALSE}
+# plot macro effects
+library(dplyr)
+library(ggplot2)
+library(latex2exp)
+myColors <- c("green", "#E69F00", "grey", "purple") 
+myColors2 <- c("#ca0020", "#0868ac", "#E69F00", "darkgreen", "darkgrey")
+
+plot2 <- dat %>% as_tibble() %>% 
+            dplyr::mutate(group = as.factor(Group)) %>%
+            group_by(Group, trial) %>%
+            summarise(Y_mean = mean(Y)) %>%
+            dplyr::filter(trial != 1) %>%
+            ggplot(aes( y = Y_mean, x = trial, group = Group)) +
+            geom_point(aes(color = Group), size = 0.75, alpha = 0.5) + 
+            geom_smooth(aes(color = Group)) +
+            ylab('Outcome Variable - Y') + 
+            xlab("Trial Number") + 
+            scale_fill_manual(values = myColors2) +
+            scale_color_manual(values = myColors2) +
+            theme_classic(base_size = 12) +
+            theme( plot.title = element_text(hjust = 0.5, color="black", size=rel(0.75), face="bold"),
+                   axis.text=element_text(color="black", size=rel(1)),
+                   axis.title = element_text(color="black", size=rel(1.25)),
+                   legend.key.size = unit(1.5, "line"), # added in to increase size
+                   legend.text = element_text(color="black", size = rel(1)), 
+                   legend.title = element_text(face="bold", color="black", size = rel(1)),
+                   strip.text = element_text(color="black", size = rel(1))) +
+            labs(tag = "A")
+
+plot3 <- dat %>% as_tibble() %>% 
+            dplyr::mutate(group = as.factor(Group)) %>%
+            dplyr::filter(trial != 1) %>% # no observation first trial
+            group_by(Group, id) %>%
+            summarise(Y_mean = mean(Y)) %>%
+            ggplot(aes( y = Y_mean, x = Group, group = Group)) +
+            geom_boxplot(aes(color = Group), lwd = 0.75) + 
+            ylab('Outcome Variable - Y') + 
+            xlab("Group") +  
+            scale_fill_manual(values = myColors2) +
+            scale_color_manual(values = myColors2) +
+            theme_classic(base_size = 12) +
+            theme( plot.title = element_text(hjust = 0.5, color="black", size=rel(0.75), face="bold"),
+                   axis.text=element_text(color="black", size=rel(1)),
+                   axis.title = element_text(color="black", size=rel(1.25)),
+                   legend.key.size = unit(1.5, "line"), # added in to increase size
+                   legend.text = element_text(color="black", size = rel(1)), 
+                   legend.title = element_text(face="bold", color="black", size = rel(1)),
+                   strip.text = element_text(color="black", size = rel(1))) +
+            labs(tag = "B")
+
+# plot both
+ggpubr::ggarrange(plot2, plot3,
+                  ncol=2, nrow=1,
+                              common.legend = TRUE,
+                              legend="bottom")
+
+```
+
+As we can see, treatment effects are entirely obscured if estimated with standard methods. The history-restricted marginal structural model that we use explicitly accounts for the closed-loop design and thus avoids the pitfalls of treatment-confounder feedback.
+
+# How to Cite
+For use of this code or vignette, please cite the following papers:
+
+Alex Levis$\ast$, Gabriel Loewinger$\ast$, Francisco Pereira. [Causal inference in the closed-loop: marginal structural models for sequential excursion effects](https://arxiv.org/abs/2405.18597v1). NeurIPS (2024).
