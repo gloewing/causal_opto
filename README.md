@@ -1,4 +1,4 @@
-# Causal Inference in the Closed Loop for NeurIPS 2024 Submission
+# Sequential Excursion Effects
 We include code to reproduce results. It may require downloading R packages and changing working directories.
 
 ## Simulations
@@ -9,3 +9,6 @@ Application code is in folder "opto"
 
 ## Functions
 "functions" folder includes code that is used by other R files.
+
+## Analysis Guide
+R code and analysis guide is in "analysis_guide" folder
