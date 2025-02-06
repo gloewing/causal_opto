@@ -370,7 +370,3 @@ ggpubr::ggarrange(plot2, plot3,
 
 As we can see, treatment effects are entirely obscured if estimated with standard methods. The history-restricted marginal structural model that we use explicitly accounts for the closed-loop design and thus avoids the pitfalls of treatment-confounder feedback.
 
-# How to Cite
-For use of this code or vignette, please cite the following papers:
-
-Alex Levis$\ast$, Gabriel Loewinger$\ast$, Francisco Pereira. [Causal inference in the closed-loop: marginal structural models for sequential excursion effects](https://arxiv.org/abs/2405.18597v1). NeurIPS (2024).
