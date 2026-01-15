@@ -1,0 +1,15 @@
+# A tibble: 12 × 4
+   variable       label                                                                         col_type missing
+   <chr>          <chr>                                                                         <chr>      <int>
+ 1 mouse_id       Participant Identifier. String variable unique for each mouse.                chr            0
+ 2 session        Experiment day (`session'). Integer variable indicating the experimental day… int            0
+ 3 pose           Pose number (identity) of current trial/timepoint. Integer variable indicati… int            0
+ 4 t              Videoframe when current trial/timepoint ends. Integer variable indicating th… int            0
+ 5 A              Treatment/laser indicator: A=1 indicates treated at current trial/timepoint,… int            0
+ 6 session_repeat Ignorable variable: if experimental session was repeated. 0 indicates first … int            0
+ 7 target         Target pose number for current trial/timepoint. Integer variable indicating … int            0
+ 8 available      Binary availability Indicator (denoted as I_t in the paper): equivalent to v… int            0
+ 9 t1             Videoframe when current trial/timepoint begins. Integer variable.             int            0
+10 t2             Videoframe when current trial/timepoint ends. Integer variable.               int            0
+11 pose_length    Duration of pose (i.e., duration of trial/timepoint) in videoframes. Integer… int            0
+12 trial          Trial/Timepoint number. Integer variable.                                     int            0
