@@ -1,6 +1,6 @@
 ---
 title: "Sequential Excursion Effect Guide"
-# author: "Gabriel Loewinger, Alex Levis"
+author: "Gabriel Loewinger, Alex Levis"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -302,7 +302,7 @@ mod = lm(Y ~ dose*Group, data = dat.seqex, weights = w) # fit model
 cov.matrix = sandwich::vcovCL(mod, type = "HC0", cluster = ~ id) # robust sandwich estimator for variance
 lmtest::coeftest(x=mod, vcov = cov.matrix) # hypothesis testing of coefficients with robust variance estimator
 ```
-The interaction terms (e.g., `dose1:GroupTreatment`) show that the dose response effect is significantly larger in the Treatment arm compared to the Control arm As we set the Control arm as a the reference level, the finding that the main effects `dose1` and `dose2` indicates that the
+The interaction terms (e.g., `dose1:GroupTreatment`) show that the dose response effect is significantly larger in the Treatment arm compared to the Control arm. The results for the main effects `dose1` and `dose2` indicate that there is no significant effect of the treatment (either dose 1 or dose 2) within the Control arm (since we set the Control arm as the reference level).
 
 More generally, one could include any variable as an effect modifier that was measured before trial $t-\Gamma+1$, such as behavior on trial $t-\Gamma$, trial number, or baseline covariates (e.g., age, sex).
 
