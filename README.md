@@ -14,4 +14,4 @@ Application code is in `opto` directory
 `functions` directory includes code that is used by other R files
 
 ## Analysis Guide
-R code and analysis guide is in `analysis_guide` folder and published on the [link](https://rpubs.com/anonymous_causal/1269330)
+R code and analysis guide is in `analysis_guide` folder and published on the [link](https://rpubs.com/gloewinger/1392933)
